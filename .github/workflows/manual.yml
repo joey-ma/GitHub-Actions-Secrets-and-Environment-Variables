@@ -61,7 +61,7 @@ jobs:
       run: |
         echo "Environment: ${{ inputs.environment }}"
         echo "Variables & secrets can always be referred to directly"
-        echo "APP_ID: ${{ var.APP_ID }}"
+        echo "APP_ID: ${{ vars.APP_ID }}"
         echo "Once defined within a particular scope (workflow, job, step),"
         echo "variables & secrets can then be referenced with ${{ env.APP_ID }}"
         echo "Another way to reference this env var is using $PROD_APP_ID"
