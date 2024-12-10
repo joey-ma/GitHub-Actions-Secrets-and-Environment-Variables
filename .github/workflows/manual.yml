@@ -23,33 +23,49 @@ on:
         required: true
         type: string
 
+# Workflow variables are environment variables scoped at the workflow level
+env:
+  # You can define them here
+  # Assuming APP_ID (variable) & API_KEY (secret) are set at repository level
+  APP_ID: ${{ vars.APP_ID }}
+  WORKFLOW_VAR: ${{ vars.APP_ID }}
+  WORKFLOW_SECRET: ${{ secrets.API_KEY }}
+  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "log"
   log:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Job variable (environment variables scoped at the job level)
+    # We can also create "environments" with specific variables & secrets
+    # Assuming "production" is a configured environment
+    environment: production
+    # Job variables are environment variables scoped at the job level
     env:
-      JOB_VAR: ${{ vars.JOB_VARIABLE }}
+      JOB_VAR: ${{ vars.APP_ID }}
+      JOB_SECRET: ${{ secrets.API_KEY }}
+      # if the same name is used, a job variable will override workflow variable
+      APP_ID: ${{ vars.APP_ID }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
     - name: Log secrets and variables
-      # Step variables (environment variables scoped at the step level)
+      # Step variables are environment variables scoped at the step level
       env:
-        APP_ID: ${{ vars.APP_ID }}
+        APP_ID: ${{ vars.APP_ID }} # will over ride more general variables with the same name
         API_KEY: ${{ secrets.API_KEY }}
-        PROD_APP_ID: ${{ vars.PROD_APP_ID }}
-        PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
+        PROD_APP_ID: ${{ vars.PROD_APP_ID }} # specifically from "production" environment
+        PROD_API_KEY: ${{ secrets.PROD_API_KEY }} # specifically from "production" environment
       run: |
         echo "Environment: ${{ inputs.environment }}"
-        echo "REPO_APP_ID: $APP_ID"
-        echo "REPO_API_KEY: $API_KEY"
-        echo "PROD_APP_ID: $PROD_APP_ID"
-        echo "PROD_API_KEY: $PROD_API_KEY"
-        echo "PROD_APP_ID: ${{ env.PROD_APP_ID }}"
-        echo "PROD_API_KEY: ${{ env.PROD_API_KEY }}"
-        echo "JOB_VAR: ${{ env.JOB_VAR }}"
+        echo "Variables & secrets can always be referred to directly"
+        echo "APP_ID: ${{ var.APP_ID }}"
+        echo "Once defined within a particular scope (workflow, job, step),"
+        echo "variables & secrets can then be referenced with ${{ env.APP_ID }}"
+        echo "Another way to reference this env var is using $PROD_APP_ID"
+        echo "Note that secrets are / should be protected, e.g., PROD_API_KEY: $PROD_API_KEY "
+        echo "However, PROD_APP_ID: ${{ env.PROD_APP_ID }} should be accessible as usual"
+        echo "Steps should still have acces to JOB_VAR (${{ env.JOB_VAR }}) and WORKFLOW_VAR ($WORKFLOW_VAR)."
+        echo "Please STAR this repo if this has been helpful to you!"
