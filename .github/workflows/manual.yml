@@ -29,28 +29,28 @@ jobs:
   log:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    # Job variable (environment variables scoped at the job level)
+    env:
+      JOB_VAR: ${{ vars.JOB_VARIABLE }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
     - name: Log secrets and variables
+      # Step variables (environment variables scoped at the step level)
       env:
-        # Use secrets and environment-specific variables
         APP_ID: ${{ vars.APP_ID }}
         API_KEY: ${{ secrets.API_KEY }}
-        PROD_APP_ID: ${{ env.PROD_APP_ID }}
+        PROD_APP_ID: ${{ vars.PROD_APP_ID }}
         PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
       run: |
-        if [ "${{ inputs.environment }}" == "repository" ]; then
-          echo "Environment: Repository"
-          echo "APP_ID: $APP_ID"
-          echo "API_KEY: $API_KEY"
-        elif [ "${{ inputs.environment }}" == "production" ]; then
-          echo "Environment: Production"
-          echo "APP_ID: $PROD_APP_ID"
-          echo "API_KEY: $PROD_API_KEY"
-        else
-          echo "Unknown environment: ${{ inputs.environment }}"
+        echo "Environment: ${{ inputs.environment }}"
+        echo "REPO_APP_ID: $APP_ID"
+        echo "REPO_API_KEY: $API_KEY"
+        echo "PROD_APP_ID: $PROD_APP_ID"
+        echo "PROD_API_KEY: $PROD_API_KEY"
+        echo "PROD_APP_ID: ${{ env.PROD_APP_ID }}"
+        echo "PROD_API_KEY: ${{ env.PROD_API_KEY }}"
+        echo "JOB_VAR: ${{ env.JOB_VAR }}"
         fi
