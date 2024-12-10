@@ -38,7 +38,7 @@ jobs:
     - name: Log secrets and variables
       env:
         # Use secrets and environment-specific variables
-        APP_ID: ${{ env.APP_ID }}
+        APP_ID: ${{ vars.APP_ID }}
         API_KEY: ${{ secrets.API_KEY }}
         PROD_APP_ID: ${{ env.PROD_APP_ID }}
         PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
