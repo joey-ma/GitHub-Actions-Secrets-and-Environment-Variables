@@ -53,4 +53,3 @@ jobs:
         echo "PROD_APP_ID: ${{ env.PROD_APP_ID }}"
         echo "PROD_API_KEY: ${{ env.PROD_API_KEY }}"
         echo "JOB_VAR: ${{ env.JOB_VAR }}"
-        fi
